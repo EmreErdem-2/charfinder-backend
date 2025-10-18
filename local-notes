@@ -1,0 +1,20 @@
+
+/*
+++++ This process is now automatized
+++++ Copy to data files to container
+docker cp C:\Users\eerde\Desktop\data\classes.json charfinder-rules-mongodb:/data/data.json
+++++ import files copied into container to db
+docker exec -it charfinder-rules-mongodb mongoimport `
+  --username rootuser `
+  --password rootpass `
+  --authenticationDatabase admin `
+  --db rules `
+  --collection classes `
+  --file /data/classes.json `
+  --jsonArray
+
+
+To resolve dependency issues:
+    mvn dependency:purge-local-repository
+    mvn clean install
+ */
