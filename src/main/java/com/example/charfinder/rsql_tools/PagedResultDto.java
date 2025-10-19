@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
+import org.bson.Document;
 
 import java.util.List;
 
@@ -13,9 +14,11 @@ import java.util.List;
 @Jacksonized
 @NoArgsConstructor
 @AllArgsConstructor
-public class PagedResultDto<T> {
+public class PagedResultDto{
     private Metadata metadata;
-    private List<T> data;
+    private String mongoQuery;
+    private String error;
+    private List<Document> data;
 
     // constructors, getters/setters
     @Data

@@ -1,5 +1,6 @@
 package com.example.charfinder.rsql_tools;
 
+import org.bson.Document;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +23,7 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public PagedResultDto<QueryResponseDto> search(
+    public PagedResultDto search(
             @RequestParam(required = false) String filter,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "50") int pageSize,
