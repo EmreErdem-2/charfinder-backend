@@ -33,5 +33,5 @@ build/
 .vscode/
 
 .env
-./init-mongo/data
+./init-mongo/data/
 .local-notes
