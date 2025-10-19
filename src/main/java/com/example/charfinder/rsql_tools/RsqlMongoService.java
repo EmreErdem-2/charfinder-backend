@@ -15,10 +15,14 @@ public class RsqlMongoService {
 
     private final MongoTemplate mongoTemplate;
     private final MongoDiagnostics mongoDiagnostics;
+    private final MongoRsqlVisitor mongoRsqlVisitor;
+    private final RSQLParser rsqlParser;
 
-    public RsqlMongoService(MongoTemplate mongoTemplate, MongoDiagnostics mongoDiagnostics) {
+    public RsqlMongoService(MongoTemplate mongoTemplate, MongoDiagnostics mongoDiagnostics, MongoRsqlVisitor mongoRsqlVisitor,RSQLParser rsqlParser) {
         this.mongoTemplate = mongoTemplate;
         this.mongoDiagnostics = mongoDiagnostics;
+        this.mongoRsqlVisitor = mongoRsqlVisitor;
+        this.rsqlParser = rsqlParser;
     }
 
     public QueryResponseDto query(String collection, String rsql, String fields) {
@@ -54,8 +58,7 @@ public class RsqlMongoService {
         if (rsql == null || rsql.isBlank()) {
             query = new Query(); // findAll
         } else {
-            Node rootNode = new RSQLParser().parse(rsql);
-            Criteria criteria = rootNode.accept(new MongoRsqlVisitor(), null);
+            Criteria criteria = buildCriteria(rsql);
             query = new Query(criteria);
         }
 
@@ -67,6 +70,11 @@ public class RsqlMongoService {
         }
 
         return query;
+    }
+
+    public Criteria buildCriteria(String rsql) {
+        Node rootNode = rsqlParser.parse(rsql);
+        return rootNode.accept(mongoRsqlVisitor, null);
     }
 
     /** Run diagnostics and enrich the response DTO */

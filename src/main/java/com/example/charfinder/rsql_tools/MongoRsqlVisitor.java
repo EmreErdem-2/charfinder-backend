@@ -2,10 +2,9 @@ package com.example.charfinder.rsql_tools;
 
 import cz.jirutka.rsql.parser.ast.*;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class MongoRsqlVisitor implements RSQLVisitor<Criteria, Void> {
 
