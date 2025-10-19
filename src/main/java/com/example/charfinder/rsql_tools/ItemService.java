@@ -17,7 +17,6 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.DEFA
 public class ItemService {
     private final MongoTemplate mongoTemplate;
     private final RsqlMongoService rsqlMongoService;
-    private static final String COLLECTION = "classes";
 
     public ItemService(MongoTemplate mongoTemplate,  RsqlMongoService rsqlMongoService) {
         this.mongoTemplate = mongoTemplate;
@@ -25,6 +24,7 @@ public class ItemService {
     }
 
     public PagedResultDto searchWithFacet(
+            String collection,
             String rsql,
             int page,
             int pageSize,
@@ -66,7 +66,7 @@ public class ItemService {
             Aggregation agg = Aggregation.newAggregation(stages)
                     .withOptions(AggregationOptions.builder().build());
             AggregationResults<Document> results =
-                    mongoTemplate.aggregate(agg, COLLECTION, Document.class);
+                    mongoTemplate.aggregate(agg, collection, Document.class);
 
             Document root = results.getUniqueMappedResult();
 
