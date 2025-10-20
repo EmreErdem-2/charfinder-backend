@@ -1,6 +1,7 @@
 package com.example.charfinder.auth;
 
-import com.example.charfinder.auth.services.UserService;
+import com.example.charfinder.user.UserService;
+import com.example.charfinder.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

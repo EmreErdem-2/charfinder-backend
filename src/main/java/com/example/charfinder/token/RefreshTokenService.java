@@ -1,8 +1,6 @@
-package com.example.charfinder.auth.services;
+package com.example.charfinder.token;
 
-import com.example.charfinder.auth.RefreshTokenRepository;
-import com.example.charfinder.auth.tables.RefreshToken;
-import com.example.charfinder.auth.tables.User;
+import com.example.charfinder.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,7 +10,6 @@ import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,23 +28,35 @@ public class RefreshTokenService {
         return repo.save(rt);
     }
 
-    public Optional<RefreshToken> validateAndRotate(User user, String rawToken) {
-        // find all active tokens for user, verify one matches and not expired/revoked
-        List<RefreshToken> tokens = repo.findByUserIdAndRevokedFalseAndExpiresAtAfter(user.getId(), Instant.now());
+    public RefreshRotationResult validateAndRotate(User user, String rawToken) {
+        // find active tokens
+        List<RefreshToken> tokens = repo.findByUserIdAndRevokedFalseAndExpiresAtAfter(
+                user.getId(), Instant.now());
+
         RefreshToken current = tokens.stream()
                 .filter(t -> encoder.matches(rawToken, t.getTokenHash()))
                 .findFirst()
-                .orElse(null);
-        if (current == null) return Optional.empty();
+                .orElseThrow(() -> new IllegalArgumentException("Invalid refresh token"));
 
-        // revoke current and issue a new one
+        // revoke current
         current.setRevoked(true);
-        RefreshToken next = issue(user, generateSecureRandomToken()); // 256-bit random
+
+        // issue new
+        String newRaw = generateSecureRandomToken();
+        RefreshToken next = new RefreshToken();
+        next.setUser(user);
+        next.setTokenHash(encoder.encode(newRaw));
+        next.setIssuedAt(Instant.now());
+        next.setExpiresAt(Instant.now().plusSeconds(refreshTtl));
+        next.setRevoked(false);
+
+        repo.save(next);
         current.setReplacedBy(next);
         repo.save(current);
 
-        return Optional.of(next);
+        return new RefreshRotationResult(next, newRaw);
     }
+
 
     public void revokeAll(User user) {
         repo.revokeAllActiveByUserId(user.getId(), Instant.now());

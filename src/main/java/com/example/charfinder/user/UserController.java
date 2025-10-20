@@ -1,7 +1,5 @@
-package com.example.charfinder.auth.controllers;
+package com.example.charfinder.user;
 
-import com.example.charfinder.auth.UserRepository;
-import com.example.charfinder.auth.tables.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;

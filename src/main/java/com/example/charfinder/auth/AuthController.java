@@ -1,10 +1,9 @@
-package com.example.charfinder.auth.controllers;
+package com.example.charfinder.auth;
 
-import com.example.charfinder.auth.UserRepository;
-import com.example.charfinder.auth.services.JwtService;
-import com.example.charfinder.auth.services.RefreshTokenService;
-import com.example.charfinder.auth.tables.RefreshToken;
-import com.example.charfinder.auth.tables.User;
+import com.example.charfinder.token.RefreshRotationResult;
+import com.example.charfinder.user.UserRepository;
+import com.example.charfinder.token.RefreshTokenService;
+import com.example.charfinder.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,8 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,7 +23,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody LoginRequest req) {
-        Authentication auth = authManager.authenticate(
+        authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(req.email(), req.password()));
         User user = userRepo.findByEmail(req.email()).orElseThrow();
         String access = jwtService.generateAccessToken(user);
@@ -39,21 +36,15 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public AuthResponse refresh(@RequestBody RefreshRequest req) {
-        User user = userRepo.findByEmail(req.email()).orElseThrow();
-        Optional<RefreshToken> rotated = refreshService.validateAndRotate(user, req.refreshToken());
-        if (rotated.isEmpty()) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid refresh token");
+        User user = userRepo.findByEmail(req.email())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
+
+        RefreshRotationResult result = refreshService.validateAndRotate(user, req.refreshToken());
 
         String newAccess = jwtService.generateAccessToken(user);
-        String newRawRefresh = rotated.get().getReplacedBy() != null
-                ? null // handled by service; return newly issued token
-                : refreshService.generateSecureRandomToken(); // should not happen in rotation path
-
-        // Better: have validateAndRotate return the newly issued raw token alongside entity
-        String issuedRawRefresh = refreshService.generateSecureRandomToken();
-        RefreshToken next = refreshService.issue(user, issuedRawRefresh);
-
-        return new AuthResponse(newAccess, issuedRawRefresh);
+        return new AuthResponse(newAccess, result.rawToken());
     }
+
 
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)

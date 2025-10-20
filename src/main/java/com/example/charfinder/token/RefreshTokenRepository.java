@@ -1,6 +1,5 @@
-package com.example.charfinder.auth;
+package com.example.charfinder.token;
 
-import com.example.charfinder.auth.tables.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

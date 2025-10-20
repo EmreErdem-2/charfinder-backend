@@ -1,6 +1,5 @@
 package com.example.charfinder.auth;
 
-import com.example.charfinder.auth.services.JwtService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

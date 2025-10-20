@@ -1,6 +1,6 @@
-package com.example.charfinder.auth.services;
+package com.example.charfinder.auth;
 
-import com.example.charfinder.auth.tables.User;
+import com.example.charfinder.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

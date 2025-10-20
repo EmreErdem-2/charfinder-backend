@@ -1,4 +1,4 @@
-package com.example.charfinder.auth.tables;
+package com.example.charfinder.user;
 
 import jakarta.persistence.*;
 import lombok.Getter;

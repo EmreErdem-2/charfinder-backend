@@ -1,7 +1,5 @@
-package com.example.charfinder.auth.services;
+package com.example.charfinder.user;
 
-import com.example.charfinder.auth.UserRepository;
-import com.example.charfinder.auth.tables.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
