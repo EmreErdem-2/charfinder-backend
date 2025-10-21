@@ -1,4 +1,4 @@
-package com.example.charfinder.token;
+package com.example.charfinder.auth.token;
 
 import com.example.charfinder.user.User;
 import lombok.RequiredArgsConstructor;

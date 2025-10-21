@@ -44,10 +44,10 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration cfg) throws Exception {
         return cfg.getAuthenticationManager();
     }
-
-    @Bean
-    public UserDetailsService userDetailsService(UserRepository repo) {
-        return new UserService(repo);
-    }
+//
+//    @Bean
+//    public UserDetailsService userDetailsService(UserRepository repo) {
+//        return new UserService(repo);
+//    }
 
 }

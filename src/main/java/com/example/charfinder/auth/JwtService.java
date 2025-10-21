@@ -1,11 +1,11 @@
 package com.example.charfinder.auth;
 
+import com.example.charfinder.user.Role;
 import com.example.charfinder.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.apache.catalina.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

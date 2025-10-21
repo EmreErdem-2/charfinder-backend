@@ -1,14 +1,13 @@
 package com.example.charfinder.auth;
 
-import com.example.charfinder.token.RefreshRotationResult;
+import com.example.charfinder.auth.token.RefreshRotationResult;
 import com.example.charfinder.user.UserRepository;
-import com.example.charfinder.token.RefreshTokenService;
+import com.example.charfinder.auth.token.RefreshTokenService;
 import com.example.charfinder.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
