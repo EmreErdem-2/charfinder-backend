@@ -96,14 +96,14 @@ public class ItemService {
         return pagedResult;
     }
 
-    // Helper to parse sort parameters like ["name,asc","age,desc"]
+    // Helper to parse sort parameters like: name-asc,age-desc (first one is prioritized
     private Sort parseSort(List<String> sortParams) {
         if (sortParams == null || sortParams.isEmpty()) {
             return Sort.unsorted();
         }
         List<Sort.Order> orders = sortParams.stream()
                 .map(spec -> {
-                    String[] parts = spec.split(",");
+                    String[] parts = spec.split("-");
                     return new Sort.Order(
                             Sort.Direction.fromString(parts[1].trim()),
                             parts[0].trim()
