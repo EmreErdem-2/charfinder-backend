@@ -1,12 +1,16 @@
 package com.example.charfinder.auth.token;
 
 import com.example.charfinder.user.User;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.List;
@@ -15,20 +19,27 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RefreshTokenService {
     private final RefreshTokenRepository repo;
-    private final PasswordEncoder encoder; // use a separate hasher if you prefer
+    private final PasswordEncoder encoder;
     @Value("${security.jwt.refreshTtlSeconds}") private long refreshTtl;
 
     public RefreshToken issue(User user, String rawToken) {
         RefreshToken rt = new RefreshToken();
         rt.setUser(user);
-        rt.setTokenHash(encoder.encode(rawToken)); // hash before storing
+        rt.setTokenHash(encoder.encode(rawToken));
         rt.setIssuedAt(Instant.now());
         rt.setExpiresAt(Instant.now().plusSeconds(refreshTtl));
         rt.setRevoked(false);
         return repo.save(rt);
     }
 
+    // Finds the refresh token and gets user information from user id attached to the refresh token
+    public User userFromRefreshToken (String rawToken) {
+        RefreshToken userToken = repo.findByTokenHashAndRevokedFalseAndExpiresAtAfter(encoder.encode(rawToken),Instant.now()).orElseThrow();
+        return userToken.getUser();
+    }
+
     public RefreshRotationResult validateAndRotate(User user, String rawToken) {
+
         // find active tokens
         List<RefreshToken> tokens = repo.findByUserIdAndRevokedFalseAndExpiresAtAfter(
                 user.getId(), Instant.now());

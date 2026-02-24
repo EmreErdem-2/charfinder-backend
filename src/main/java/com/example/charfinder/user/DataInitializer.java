@@ -21,17 +21,17 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         // Ensure roles exist
-        Role userRole = roleRepository.findByName("ROLE_USER")
-                .orElseGet(() -> {
-                    Role r = new Role();
-                    r.setName("ROLE_USER");
-                    return roleRepository.save(r);
-                });
-
         Role adminRole = roleRepository.findByName("ROLE_ADMIN")
                 .orElseGet(() -> {
                     Role r = new Role();
                     r.setName("ROLE_ADMIN");
+                    return roleRepository.save(r);
+                });
+
+        Role userRole = roleRepository.findByName("ROLE_USER")
+                .orElseGet(() -> {
+                    Role r = new Role();
+                    r.setName("ROLE_USER");
                     return roleRepository.save(r);
                 });
 
