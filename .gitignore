@@ -33,6 +33,7 @@ build/
 .vscode/
 
 .env
+init-mongo/data
 ./init-mongo/data/
 ./init-mongo/data/*.json
 .local-notes
